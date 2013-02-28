@@ -1,0 +1,6 @@
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\bin\Release\MurmurHashPerformance.exe.config
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\bin\Release\MurmurHashPerformance.exe
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\bin\Release\MurmurHashPerformance.pdb
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\obj\x86\Release\ResolveAssemblyReference.cache
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\obj\x86\Release\MurmurHashPerformance.exe
+C:\local\GIT\Murmur3Hash\MurmurHashPerformance\obj\x86\Release\MurmurHashPerformance.pdb
