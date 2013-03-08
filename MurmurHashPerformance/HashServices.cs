@@ -39,14 +39,14 @@ namespace MurmurHashPerformance
             return hashedValue;
         }
 
-    
-        //public static string CRC32Hash(byte[] data)
-        //{
 
-        //    Crc32 crc32 = new Crc32();
-        //    return Convert.ToBase64String(crc32.ComputeHash(data)) ;
-           
-        //}
+        public static string CRC32Hash(byte[] data)
+        {
+
+            Crc32 crc32 = new Crc32();
+            return Convert.ToBase64String(crc32.ComputeHash(data));
+
+        }
         //public static string CRC32AHash(byte[] data)
         //{
 

@@ -20,8 +20,8 @@ namespace MurmurHashPerformance
         {
             //EnglishWordHashTesting e1 = new EnglishWordHashTesting();
             //e1.InitTestingData();
-          //  RandomTest r1 = new RandomTest();
-            RandomTest.HashTesting();
+           RandomTest r1 = new RandomTest();
+            r1.HashTesting();
 
 
             Console.ReadLine();

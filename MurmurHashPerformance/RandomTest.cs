@@ -10,22 +10,22 @@ namespace MurmurHashPerformance
     public class RandomTest  
     {
 
-        public static void InitTestingData()
+        public  void InitTestingData()
         {
             RandomData = GenerateRandomData(256 * 1024);
         }
 
-        public static byte[] RandomData;
+        public  byte[] RandomData;
 
 
-        public static byte[] GetTestingDataForIter(long i)
+        public  byte[] GetTestingDataForIter(long i)
         {
             return RandomData;
         }
 
-        public static string title = "\n===  Test 1 -- Random data for 10000 iterations (each block contains 256K)\n\n";
+        public  string title = "\n===  Test 1 -- Random data for 10000 iterations (each block contains 256K)\n\n";
 
-        public static void HashTesting()
+        public  void HashTesting()
         {
             Console.WriteLine(title);
 
@@ -35,27 +35,22 @@ namespace MurmurHashPerformance
 
             long iterations = 10000;
 
-            //{
-            //    HashFunc shaDelegate = new HashFunc(HashServices.CRC32Hash);
-            //    Stopwatch r = Profile(shaDelegate, iterations);
-            //    Report("CRC32Hash  profile...", length, iterations, r);
-            //}
-            //{
-            //    HashFunc shaDelegate = new HashFunc(HashServices.CRC32AHash);
-            //    Stopwatch r = Profile(shaDelegate, iterations);
-            //    Report("CRC32AHash  profile...", length, iterations, r);
-            //}
+ 
+            {
+                var timer = Stopwatch.StartNew();
+                for (long i = 0; i < iterations; i++)
+                {
+                    HashServices.SHA1Hash(GetTestingDataForIter(i));
+                }
+                // stop profiling
+                timer.Stop();
 
-            //{
-            //    HashFunc oBase64 = new HashFunc(HashServices.ConverToBase64);
-            //    Stopwatch r = Profile(oBase64, iterations);
-            //    Report("ConverToBase64 profile...", length, iterations, r);
-            //}
-
+                Report("CRC32Hash  profile...", length, iterations, timer);
+            }
+   
 
             {
-                HashFunc murmurDelegate = new HashFunc(HashServices.Murmurhash);
-
+              
                 var timer = Stopwatch.StartNew();
                 for (long i = 0; i < iterations; i++)
                 {
@@ -78,7 +73,7 @@ namespace MurmurHashPerformance
 
 
 
-        public static byte[] GenerateRandomData(long length)
+        public  byte[] GenerateRandomData(long length)
         {
             byte[] data = new byte[length];
 
@@ -103,7 +98,7 @@ namespace MurmurHashPerformance
         //}
 
 
-        static void Report(string title, long length, long iterations, Stopwatch timer)
+         void Report(string title, long length, long iterations, Stopwatch timer)
         {
             double totalBytes = length * iterations;
             double totalSeconds = timer.ElapsedMilliseconds / 1000.0;
