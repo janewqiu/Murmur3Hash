@@ -7,25 +7,25 @@ using System.Diagnostics;
 
 namespace MurmurHashPerformance
 {
-    public class RandomTest : HashTester
+    public class RandomTest  
     {
-             
-        public override void InitTestingData()
+
+        public static void InitTestingData()
         {
             RandomData = GenerateRandomData(256 * 1024);
         }
 
-        public  byte[] RandomData;
+        public static byte[] RandomData;
 
 
-        public  override byte[] GetTestingDataForIter(long i)
+        public static byte[] GetTestingDataForIter(long i)
         {
             return RandomData;
         }
 
-        public  string title = "\n===  Test 1 -- Random data for 10000 iterations (each block contains 256K)\n\n";
+        public static string title = "\n===  Test 1 -- Random data for 10000 iterations (each block contains 256K)\n\n";
 
-        public  void HashTesting()
+        public static void HashTesting()
         {
             Console.WriteLine(title);
 
@@ -35,50 +35,91 @@ namespace MurmurHashPerformance
 
             long iterations = 10000;
 
-            {
-                HashFunc shaDelegate = new HashFunc(HashServices.CRC32Hash);
-                Stopwatch r = Profile(shaDelegate, iterations);
-                Report("CRC32Hash  profile...", length, iterations, r);
-            }
-            {
-                HashFunc shaDelegate = new HashFunc(HashServices.CRC32AHash);
-                Stopwatch r = Profile(shaDelegate, iterations);
-                Report("CRC32AHash  profile...", length, iterations, r);
-            }
+            //{
+            //    HashFunc shaDelegate = new HashFunc(HashServices.CRC32Hash);
+            //    Stopwatch r = Profile(shaDelegate, iterations);
+            //    Report("CRC32Hash  profile...", length, iterations, r);
+            //}
+            //{
+            //    HashFunc shaDelegate = new HashFunc(HashServices.CRC32AHash);
+            //    Stopwatch r = Profile(shaDelegate, iterations);
+            //    Report("CRC32AHash  profile...", length, iterations, r);
+            //}
 
-            {
-                HashFunc shaDelegate = new HashFunc(HashServices.ConverToBase64);
-                Stopwatch r = Profile(shaDelegate, iterations);
-                Report("ConverToBase64 profile...", length, iterations, r);
-            }
+            //{
+            //    HashFunc oBase64 = new HashFunc(HashServices.ConverToBase64);
+            //    Stopwatch r = Profile(oBase64, iterations);
+            //    Report("ConverToBase64 profile...", length, iterations, r);
+            //}
 
 
             {
                 HashFunc murmurDelegate = new HashFunc(HashServices.Murmurhash);
-                Stopwatch r = Profile(murmurDelegate, iterations);
-                Report("Murmurhash profile...", length, iterations, r);
+
+                var timer = Stopwatch.StartNew();
+                for (long i = 0; i < iterations; i++)
+                {
+                    HashServices.Murmurhash(GetTestingDataForIter(i));
+                }
+                // stop profiling
+                timer.Stop();
+                                       
+                Report("Murmurhash profile...", length, iterations, timer);
             }
 
-            {
-                HashFunc shaDelegate = new HashFunc(HashServices.SHA1Hash);
-                Stopwatch r = Profile(shaDelegate, iterations);
-                Report("SHA1Hash profile...", length, iterations, r);
-            }
+            //{
+            //    HashFunc shaDelegate = new HashFunc(HashServices.SHA1Hash);
+            //    Stopwatch r = Profile(shaDelegate, iterations);
+            //    Report("SHA1Hash profile...", length, iterations, r);
+            //}
                    
         }
 
 
 
 
-        public  byte[] GenerateRandomData(long length)
+        public static byte[] GenerateRandomData(long length)
         {
             byte[] data = new byte[length];
 
-            using (var gen = RandomNumberGenerator.Create())
+            var gen = RandomNumberGenerator.Create();
                 gen.GetBytes(data);
 
 
             return data;
+        }
+
+
+        //internal Stopwatch Profile(HashFunc hashFunc, long iterations)
+        //{
+        //    var timer = Stopwatch.StartNew();
+        //    for (long i = 0; i < iterations; i++)
+        //    {
+        //        hashFunc(GetTestingDataForIter(i));
+        //    }
+        //    // stop profiling
+        //    timer.Stop();
+        //    return timer;
+        //}
+
+
+        static void Report(string title, long length, long iterations, Stopwatch timer)
+        {
+            double totalBytes = length * iterations;
+            double totalSeconds = timer.ElapsedMilliseconds / 1000.0;
+
+            double bytesPerSecond = totalBytes / totalSeconds;
+            double mbitsPerSecond = (bytesPerSecond / (1024.0 * 1024.0));
+
+            Console.WriteLine("\n" + title);
+            Console.WriteLine(" test Bytes     :" + totalBytes);
+            Console.WriteLine(" iterations     :" + iterations);
+            Console.WriteLine(" totalSeconds   :" + totalSeconds);
+
+            Console.WriteLine(" bytesPerSecond :" + bytesPerSecond);
+
+            Console.WriteLine(" mbitsPerSecond :" + mbitsPerSecond);
+
         }
 
     }

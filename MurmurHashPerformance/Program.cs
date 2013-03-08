@@ -18,10 +18,10 @@ namespace MurmurHashPerformance
 
         static void Main(string[] args)
         {
-            EnglishWordHashTesting e1 = new EnglishWordHashTesting();
-            e1.InitTestingData();
-            RandomTest r1 = new RandomTest();
-            r1.HashTesting();
+            //EnglishWordHashTesting e1 = new EnglishWordHashTesting();
+            //e1.InitTestingData();
+          //  RandomTest r1 = new RandomTest();
+            RandomTest.HashTesting();
 
 
             Console.ReadLine();

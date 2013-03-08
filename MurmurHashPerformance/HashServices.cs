@@ -40,20 +40,20 @@ namespace MurmurHashPerformance
         }
 
     
-        public static string CRC32Hash(byte[] data)
-        {
+        //public static string CRC32Hash(byte[] data)
+        //{
 
-            Crc32 crc32 = new Crc32();
-            return Convert.ToBase64String(crc32.ComputeHash(data)) ;
+        //    Crc32 crc32 = new Crc32();
+        //    return Convert.ToBase64String(crc32.ComputeHash(data)) ;
            
-        }
-        public static string CRC32AHash(byte[] data)
-        {
+        //}
+        //public static string CRC32AHash(byte[] data)
+        //{
 
-            Crc32A crc32 = new Crc32A();
-            return Convert.ToBase64String(crc32.ComputeHash(data));
+        //    Crc32A crc32 = new Crc32A();
+        //    return Convert.ToBase64String(crc32.ComputeHash(data));
 
-        }
+        //}
 
         public static string ConverToBase64(byte[] data)
         {

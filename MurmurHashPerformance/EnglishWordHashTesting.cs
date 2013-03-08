@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MurmurHashPerformance
 {
-    public class EnglishWordHashTesting   : HashTester
+    public class EnglishWordHashTesting  
     {
 
          byte[] GetBytes(string str)
@@ -15,7 +15,7 @@ namespace MurmurHashPerformance
             return bytes;
         }
 
-        public override  void InitTestingData()
+        public    void InitTestingData()
         {
 
             englishwordlist = System.IO.File.ReadAllLines("TWL06.txt");
@@ -26,7 +26,7 @@ namespace MurmurHashPerformance
          string[] englishwordlist;
 
 
-        public  override byte[] GetTestingDataForIter(long i)
+        public    byte[] GetTestingDataForIter(long i)
         {
             return GetBytes(englishwordlist[i]);
         }
