@@ -75,7 +75,7 @@ namespace MurmurHashPerformance
                     Console.Write(x.Key);
                     foreach (var y in x.AsEnumerable())
                     {
-                        Console.Write(englishwordlist[y.No] + "\t");
+                        Console.Write(englishwordlist[y.No] + ",");
                     }
                     Console.WriteLine();
                 }
@@ -107,7 +107,7 @@ namespace MurmurHashPerformance
                     Console.Write(x.Key);
                     foreach (var y in x.AsEnumerable())
                     {
-                        Console.Write(englishwordlist[y.No] + "\t");
+                        Console.Write(englishwordlist[y.No] + ",");
                     }
                     Console.WriteLine();
                 }
@@ -123,15 +123,15 @@ namespace MurmurHashPerformance
                 var timer = Stopwatch.StartNew();
                 for (long i = 0; i < iterations; i++)
                 {
-                    string data = englishwordlist[i];
-                    testresult.Add(new TestHashData() { No = i, HashString = HashServices.CityHashCode(data) });
+                    byte[] data = GetTestingDataForIter(i);
+                    testresult.Add(new TestHashData() { No = i, HashString = HashServices.CRC32Hash(data) });
                     length += data.Length;
 
                 }
                 // stop profiling
                 timer.Stop();
 
-                Report("CityHash  profile...", length, iterations, timer);
+                Report("Crc32  profile...", length, iterations, timer);
 
                 var conflit = testresult.GroupBy(u => u.HashString).Where(u => u.Count() > 1).ToArray();
 
@@ -141,7 +141,7 @@ namespace MurmurHashPerformance
                     Console.Write(x.Key);
                     foreach (var y in x.AsEnumerable())
                     {
-                        Console.Write(englishwordlist[y.No] + "\t");
+                        Console.Write(englishwordlist[y.No] + ",");
                     }
                     Console.WriteLine();
                 }
