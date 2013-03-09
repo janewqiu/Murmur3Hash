@@ -113,6 +113,40 @@ namespace MurmurHashPerformance
                 }
             }
 
+
+
+
+
+            {
+                length = 0;
+                List<TestHashData> testresult = new List<TestHashData>();
+                var timer = Stopwatch.StartNew();
+                for (long i = 0; i < iterations; i++)
+                {
+                    string data = englishwordlist[i];
+                    testresult.Add(new TestHashData() { No = i, HashString = HashServices.CityHashCode(data) });
+                    length += data.Length;
+
+                }
+                // stop profiling
+                timer.Stop();
+
+                Report("CityHash  profile...", length, iterations, timer);
+
+                var conflit = testresult.GroupBy(u => u.HashString).Where(u => u.Count() > 1).ToArray();
+
+                Console.WriteLine("Conflit count:" + conflit.Count());
+                foreach (var x in conflit)
+                {
+                    Console.Write(x.Key);
+                    foreach (var y in x.AsEnumerable())
+                    {
+                        Console.Write(englishwordlist[y.No] + "\t");
+                    }
+                    Console.WriteLine();
+                }
+            }
+
            
          
 

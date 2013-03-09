@@ -40,6 +40,10 @@ namespace MurmurHashPerformance
         }
 
 
+        public static string CityHashCode(string data)
+        {
+            return CityHash.CityHash.GetCityHash64(data).ToString();
+        }
         public static string CRC32Hash(byte[] data)
         {
 
