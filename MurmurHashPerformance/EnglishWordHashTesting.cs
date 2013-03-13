@@ -52,7 +52,7 @@ namespace MurmurHashPerformance
 
 
             {
-                length = 0;
+                 length = 0;
                 List<TestHashData> testresult = new List<TestHashData>();
                 var timer = Stopwatch.StartNew();
                 for (long i = 0; i < iterations; i++)

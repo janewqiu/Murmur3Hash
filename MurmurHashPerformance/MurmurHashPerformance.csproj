@@ -94,6 +94,7 @@
     <Compile Include="Murmur3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util\DrawDataGrid.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CityHash.Win32.dll">
