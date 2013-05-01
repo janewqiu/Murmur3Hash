@@ -1,0 +1,73 @@
+﻿1) https://sites.google.com/site/murmurhash/ 
+
+Extremely simple - compiles down to ~52 instructions on x86.
+
+Excellent distribution - Passes chi-squared tests for practically all keysets & bucket sizes.
+
+Excellent avalanche behavior - Maximum bias is under 0.5%.
+
+Excellent collision resistance - Passes Bob Jenkin's frog.c torture-test. No collisions possible for 4-byte keys, no small (1- to 7-bit) differentials.
+
+Excellent performance - measured on an Intel Core 2 Duo @ 2.4 ghz
+
+    OneAtATime - 354.163715 mb/sec
+    FNV - 443.668038 mb/sec
+    SuperFastHash - 985.335173 mb/sec
+    lookup3 - 988.080652 mb/sec
+    MurmurHash 1.0 - 1363.293480 mb/sec
+    MurmurHash 2.0 - 2056.885653 mb/sec
+
+Source code
+    for the simple implementation - MurmurHash2.cpp
+    for the simple implementation w/ Merkle-Damgard-esque construction - MurmurHash2A.cpp
+    for the 64-bit version - MurmurHash2_64.cpp
+    for the little-endian aligned-read-only implementation - MurmurHashAligned2.cpp
+    for the (slower) endian-neutral implementation - MurmurHashNeutral2.cpp
+
+2) https://code.google.com/p/csharputils/source/browse/trunk/CSharpUtils/CSharpUtils/Net/Security/Cryptography/?r=89
+3) http://blog.teamleadnet.com/2012/08/murmurhash3-ultra-fast-hash-algorithm.html
+4) http://www.assembleforce.com/2012-07/use-murmur2-to-generate-hash-code.h\
+hree constants are needed during computation, they are:
+
+m = 0x5bd1e995;
+r = 24;
+seed = 0x9747b28c;
+And the hash value is initialized as the following.
+
+hash =  seed ^ len(buffer);
+And we will iterate over all the bytes in buffer and do bit-wise shifting and multiplication.
+
+foreach unit in buffer
+    k =  unit;
+    k = k*m;
+    k = k ^ (k>>r);
+    k = k * m;
+    hash = hash * m;
+    hash = hash ^ k;
+end foreach
+with remaining byte in buffer
+    swap endian order off in byte;
+    hash = hash ^ byte;
+    hash = hash * m;
+end with
+hash = hash ^ r;
+hash = hash * m;
+hash = hash ^ r;
+Note that the constant r should be 47 in 64-bit output and 24 in 32-bit output. In Wikipedia, the last three lines look like the following for 32-bit output.
+
+
+TODO:
+read: http://bloomfilter.codeplex.com/
+read: https://code.google.com/p/cityhash/source/browse/trunk/README
+
+
+
+REFS:
+https://github.com/JohnLangford/vowpal_wabbit/wiki/murmur2-vs-murmur3
+
+
+
+
+
+-- FNV testing
+

@@ -54,7 +54,7 @@ namespace MurmurHashPerformance
                 var timer = Stopwatch.StartNew();
                 for (long i = 0; i < iterations; i++)
                 {
-                    HashServices.Murmurhash(GetTestingDataForIter(i));
+                    HashServices.Murmur3_64Bit(GetTestingDataForIter(i));
                 }
                 // stop profiling
                 timer.Stop();

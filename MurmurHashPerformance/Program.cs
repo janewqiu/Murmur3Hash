@@ -26,7 +26,7 @@ namespace MurmurHashPerformance
            // r1.HashTesting();
 
 
-          //  Console.ReadLine();
+     //   Console.ReadLine();
 
         }
 

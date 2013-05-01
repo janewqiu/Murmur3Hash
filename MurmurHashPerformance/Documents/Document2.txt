@@ -1,0 +1,75 @@
+﻿murmur: 更快更好的哈希函数
+以前写PHP的时候，哈希函数就只用过md5和sha1，也是最常用的两个。现在多数用python，又听说twitter用的是FNV，于是就用上了。
+FNV产生的是一个整数，32位或者64位或者更多。一般用来做字符串哈希的话，需要64位。32位的碰撞率咱不放心。整数的结果，比起md5和sha1的字符串结果，存储空间要小一点。而且FNV也是比较快的。
+现成的FNV的python模块是pyfasthash。这个项目名字叫pyfasthash，但模块名字叫pyhash。而且直接通过easy_install是安装不了的，在Downloads那里下载的解压出来也是安装不了的。要checkout svn里面的源码才可以。当初就是捣鼓一个晚上才发现。而且它依赖c＋＋的boost库，编译时间很漫长。总之吐槽点很多。不过用起来还算顺手。
+今晚看到了这个：http://sites.google.com/site/murmurhash/avalanche。看上去FNV很不济 -_,-。于是就试下里面最好的murmur。这个页面正是murmur的作者做的。官网在：http://sites.google.com/site/murmurhash/。虽然也有另外一个现成的murmur的python模块（地址），但是是只有32bit的没有64bit的。32bit的不够用。于是只好把它64bit的源码下回来自己封装。代码不多：
+#include "Python.h"
+ 
+unsigned long long MurmurHash64B ( const void * key, int len, unsigned int seed )
+{
+	const unsigned int m = 0x5bd1e995;
+	const int r = 24;
+ 
+	unsigned int h1 = seed ^ len;
+	unsigned int h2 = 0;
+ 
+	const unsigned int * data = (const unsigned int *)key;
+ 
+	while(len >= 8)
+	{
+		unsigned int k1 = *data++;
+		k1 *= m; k1 ^= k1 >> r; k1 *= m;
+		h1 *= m; h1 ^= k1;
+		len -= 4;
+ 
+		unsigned int k2 = *data++;
+		k2 *= m; k2 ^= k2 >> r; k2 *= m;
+		h2 *= m; h2 ^= k2;
+		len -= 4;
+	}
+ 
+	if(len >= 4)
+	{
+		unsigned int k1 = *data++;
+		k1 *= m; k1 ^= k1 >> r; k1 *= m;
+		h1 *= m; h1 ^= k1;
+		len -= 4;
+	}
+ 
+	switch(len)
+	{
+	case 3: h2 ^= ((unsigned char*)data)[2] << 16;
+	case 2: h2 ^= ((unsigned char*)data)[1] << 8;
+	case 1: h2 ^= ((unsigned char*)data)[0];
+			h2 *= m;
+	};
+ 
+	h1 ^= h2 >> 18; h1 *= m;
+	h2 ^= h1 >> 22; h2 *= m;
+	h1 ^= h2 >> 17; h1 *= m;
+	h2 ^= h1 >> 19; h2 *= m;
+ 
+	unsigned long long h = h1;
+ 
+	h = (h << 32) | h2;
+ 
+	return h;
+} 
+ 
+static PyObject *
+hash(PyObject *self, PyObject *args) {
+  const char *p;
+  PyArg_ParseTuple(args, "s", &p);
+  unsigned long long ret = MurmurHash64B(p, strlen(p), 0x19870714);
+  return PyLong_FromUnsignedLongLong(ret);
+}
+ 
+static PyMethodDef PythonPymurmurModules[] = {
+  {"hash", hash, METH_VARARGS, "64bit murmur hash function"},
+  {NULL, NULL, 0, NULL}
+};
+ 
+PyMODINIT_FUNC
+initpymurmur(void) {
+  Py_InitModule("pymurmur", PythonPymurmurModules);
+}
