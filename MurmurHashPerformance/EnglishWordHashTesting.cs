@@ -18,15 +18,15 @@ namespace MurmurHashPerformance
 
         public    void InitTestingData()
         {
-           string[] datafile =System.IO.File.ReadAllLines("TWL06.txt");
-           englishwordlist = new string[datafile.Length *3];
+           string[] datafile =System.IO.File.ReadAllLines("TWL06d.txt");
+           englishwordlist = new string[datafile.Length];
 
            int i=0;
            foreach (string s in datafile)
            {
-               englishwordlist[i++] = s.ToUpper();
-               englishwordlist[i++] = s.ToLower();
-               englishwordlist[i++] = s[0].ToString().ToUpper()+s.ToLower().Substring(1);
+               englishwordlist[i++] = s;//.ToUpper();
+               //englishwordlist[i++] = s.ToLower();
+               //englishwordlist[i++] = s[0].ToString().ToUpper() + s.ToLower().Substring(1);
            }
        
 
@@ -47,7 +47,7 @@ namespace MurmurHashPerformance
         }
 
         public string title = "\n===  Test 1 -- Random data for 10000 iterations (each block contains 256K)\n\n";
-        int iterationIter = 50;
+        int iterationIter = 30;
         public void HashTesting()
         {
             Console.WriteLine(title);
@@ -64,7 +64,48 @@ namespace MurmurHashPerformance
 
                 var timer = Stopwatch.StartNew();
                 IGrouping<string, TestHashData>[] conflit = null;
-                for (int x = 0; x < 4; x++)
+                for (int x = 0; x < iterationIter; x++)
+                {
+                    List<TestHashData> testresult = new List<TestHashData>();
+                    for (long i = 0; i < iterations; i++)
+                    {
+                        byte[] data = GetTestingDataForIter(i);
+                        testresult.Add(new TestHashData() { No = i, HashString = HashServices.CPP_FNVHash(data) });
+                        length += data.Length;
+
+                    }
+                    if (x == 0)
+                    {
+                        conflit = testresult.GroupBy(u => u.HashString).Where(u => u.Count() > 1).ToArray();
+                    }
+                }
+                // stop profiling
+                timer.Stop();
+
+                Report("CPP_FNVHash  profile...", length, iterations, timer);
+                if (conflit != null)
+                {
+                    Console.WriteLine("Conflit count:" + conflit.Length);
+                    foreach (var x in conflit.Take(6))
+                    {
+                        Console.Write(x.Key);
+                        foreach (var y in x.AsEnumerable())
+                        {
+                            Console.Write(englishwordlist[y.No] + " | ");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+            }
+
+
+            {
+                length = 0;
+
+
+                var timer = Stopwatch.StartNew();
+                IGrouping<string, TestHashData>[] conflit = null;
+                for (int x = 0; x < iterationIter; x++)
                 {
                     List<TestHashData> testresult = new List<TestHashData>();
                     for (long i = 0; i < iterations; i++)
@@ -91,13 +132,95 @@ namespace MurmurHashPerformance
                         Console.Write(x.Key);
                         foreach (var y in x.AsEnumerable())
                         {
-                            Console.Write(englishwordlist[y.No] + ",");
+                            Console.Write(englishwordlist[y.No] + " | ");
                         }
                         Console.WriteLine();
                     }
                 }
             }
 
+
+            {
+                length = 0;
+
+
+                var timer = Stopwatch.StartNew();
+                IGrouping<string, TestHashData>[] conflit = null;
+                for (int x = 0; x < iterationIter; x++)
+                {
+                    List<TestHashData> testresult = new List<TestHashData>();
+                    for (long i = 0; i < iterations; i++)
+                    {
+                        byte[] data = GetTestingDataForIter(i);
+                        testresult.Add(new TestHashData() { No = i, HashString = HashServices.MD4HashTest(data) });
+                        length += data.Length;
+
+                    }
+                    if (x == 0)
+                    {
+                        conflit = testresult.GroupBy(u => u.HashString).Where(u => u.Count() > 1).ToArray();
+                    }
+                }
+                // stop profiling
+                timer.Stop();
+
+                Report("MD4HashTest  profile...", length, iterations, timer);
+                if (conflit != null)
+                {
+                    Console.WriteLine("Conflit count:" + conflit.Length);
+                    foreach (var x in conflit.Take(6))
+                    {
+                        Console.Write(x.Key);
+                        foreach (var y in x.AsEnumerable())
+                        {
+                            Console.Write(englishwordlist[y.No] + " | ");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+            }
+
+
+
+            {
+                length = 0;
+
+
+                var timer = Stopwatch.StartNew();
+                IGrouping<string, TestHashData>[] conflit = null;
+                for (int x = 0; x < iterationIter; x++)
+                {
+                    List<TestHashData> testresult = new List<TestHashData>();
+                    for (long i = 0; i < iterations; i++)
+                    {
+                        byte[] data = GetTestingDataForIter(i);
+                        testresult.Add(new TestHashData() { No = i, HashString = HashServices.Murmur3_64Bit(data) });
+                        length += data.Length;
+
+                    }
+                    if (x == 0)
+                    {
+                        conflit = testresult.GroupBy(u => u.HashString).Where(u => u.Count() > 1).ToArray();
+                    }
+                }
+                // stop profiling
+                timer.Stop();
+
+                Report("Murmur3_64Bit  profile...", length, iterations, timer);
+                if (conflit != null)
+                {
+                    Console.WriteLine("Conflit count:" + conflit.Length);
+                    foreach (var x in conflit.Take(6))
+                    {
+                        Console.Write(x.Key);
+                        foreach (var y in x.AsEnumerable())
+                        {
+                            Console.Write(englishwordlist[y.No] + " | ");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+            }
             /*
             
            {
@@ -133,7 +256,7 @@ namespace MurmurHashPerformance
                        Console.Write(x.Key);
                        foreach (var y in x.AsEnumerable())
                        {
-                           Console.Write(englishwordlist[y.No] + ",");
+                           Console.Write(englishwordlist[y.No] + " | ");
                        }
                        Console.WriteLine();
                    }
@@ -164,7 +287,7 @@ namespace MurmurHashPerformance
                    Console.Write(x.Key);
                    foreach (var y in x.AsEnumerable())
                    {
-                       Console.Write(englishwordlist[y.No] + ",");
+                       Console.Write(englishwordlist[y.No] + " | ");
                    }
                    Console.WriteLine();
                }
@@ -205,7 +328,7 @@ namespace MurmurHashPerformance
                        Console.Write(x.Key);
                        foreach (var y in x.AsEnumerable())
                        {
-                           Console.Write(englishwordlist[y.No] + ",");
+                           Console.Write(englishwordlist[y.No] + " | ");
                        }
                        Console.WriteLine();
                    }
@@ -246,7 +369,7 @@ namespace MurmurHashPerformance
                        Console.Write(x.Key);
                        foreach (var y in x.AsEnumerable())
                        {
-                           Console.Write(englishwordlist[y.No] + ",");
+                           Console.Write(englishwordlist[y.No] + " | ");
                        }
                        Console.WriteLine();
                    }
@@ -280,7 +403,7 @@ namespace MurmurHashPerformance
                    Console.Write(x.Key);
                    foreach (var y in x.AsEnumerable())
                    {
-                       Console.Write(englishwordlist[y.No] + ",");
+                       Console.Write(englishwordlist[y.No] + " | ");
                    }
                    Console.WriteLine();
                }
@@ -324,7 +447,7 @@ namespace MurmurHashPerformance
                        Console.Write(x.Key);
                        foreach (var y in x.AsEnumerable())
                        {
-                           Console.Write(englishwordlist[y.No] + ",");
+                           Console.Write(englishwordlist[y.No] + " | ");
                        }
                        Console.WriteLine();
                    }
@@ -367,7 +490,7 @@ namespace MurmurHashPerformance
                        Console.Write(x.Key);
                        foreach (var y in x.AsEnumerable())
                        {
-                           Console.Write(englishwordlist[y.No] + ",");
+                           Console.Write(englishwordlist[y.No] + " | ");
                        }
                        Console.WriteLine();
                    }
@@ -399,7 +522,7 @@ namespace MurmurHashPerformance
                    Console.Write(x.Key);
                    foreach (var y in x.AsEnumerable())
                    {
-                       Console.Write(englishwordlist[y.No] + ",");
+                       Console.Write(englishwordlist[y.No] + " | ");
                    }
                    Console.WriteLine();
                }
@@ -479,7 +602,7 @@ namespace MurmurHashPerformance
 
             Console.WriteLine(" bytesPerSecond :" + IntHelpers.ConverFilesizeFormat((long)bytesPerSecond));
 
-            Console.WriteLine(" mbitsPerSecond :" + (long)mbitsPerSecond);
+   //         Console.WriteLine(" mbitsPerSecond :" + (long)mbitsPerSecond);
 
         }
 

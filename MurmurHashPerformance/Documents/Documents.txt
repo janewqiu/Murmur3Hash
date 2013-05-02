@@ -71,3 +71,46 @@ https://github.com/JohnLangford/vowpal_wabbit/wiki/murmur2-vs-murmur3
 
 -- FNV testing
 
+
+
+
+
+
+
+
+
+
+
+C:\local\GIT\Murmur3Hash\Release>MurmurHashPerformance.exe
+
+===  Test 1 -- Random data for 10000 iterations (each block contains 256K)
+
+target:x86
+
+CPP_FNVHash  profile...
+ Total Bytes    :125.42 MB
+ Call Times     :37947
+ totalSeconds   :0.94
+ bytesPerSecond :133.43 MB
+Conflit count:0
+
+FNV1A32  profile...
+ Total Bytes    :125.42 MB
+ Call Times     :37947
+ totalSeconds   :0.937
+ bytesPerSecond :133.86 MB
+Conflit count:0
+
+MD4HashTest  profile...
+ Total Bytes    :125.42 MB
+ Call Times     :37947
+ totalSeconds   :1.961
+ bytesPerSecond :63.96 MB
+Conflit count:0
+
+Murmur3_64Bit  profile...
+ Total Bytes    :125.42 MB
+ Call Times     :37947
+ totalSeconds   :1.594
+ bytesPerSecond :78.68 MB
+Conflit count:0

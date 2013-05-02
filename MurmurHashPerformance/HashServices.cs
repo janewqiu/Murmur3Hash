@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System.Runtime.InteropServices;
  
 namespace MurmurHashPerformance
 {
@@ -122,9 +123,19 @@ namespace MurmurHashPerformance
         {
             //       byte[] intBytes = BitConverter.GetBytes(the value);
          //   return FNVHash.Hash32FNV1bx(data).ToString();
-            return Convert.ToBase64String(GetBytesUInt32(FNVHash.Hash32FNV1bx(data)));
+            return Convert.ToBase64String(GetBytesUInt32(FNVHash.Hash32FNV1a(data)));
         //    return  (char) data[0] + Convert.ToBase64String(GetBytesUInt32(FNVHash.Hash32FNV1bx(data)));
         }
+
+        public static string MaPrime2cHash(byte[] data)
+        {
+//            uint hash1 = FNVHash.Hash32FNV1bx(data);
+            uint hash2 = MaPrime2c.MaPrime2cHash(data);
+            return Convert.ToBase64String(GetBytesUInt32(hash2)); 
+        }
+
+
+
 
         public static string FNV1A64x(byte[] data)
         {
@@ -168,5 +179,32 @@ namespace MurmurHashPerformance
             return Convert.ToBase64String(data,0,1000);
 
         }
+
+
+
+
+        //Direct pointer access
+        [DllImport("ArisoHashDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe uint CPPFNVHash(IntPtr p, int size);
+
+        public static unsafe uint CPPFNVHash(byte[] data)
+        {
+            uint result;
+            int size = data.Length;
+            fixed (byte* p = data)
+            {
+                result = CPPFNVHash((IntPtr)p, size);
+            }
+            return result;
+        }
+
+        public static string CPP_FNVHash(byte[] data)
+        {
+
+            uint hash2 = CPPFNVHash(data);
+            return Convert.ToBase64String(GetBytesUInt32(hash2));
+        }
+
+
     }
 }

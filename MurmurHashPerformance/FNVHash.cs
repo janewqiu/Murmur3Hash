@@ -33,7 +33,7 @@ namespace MurmurHashPerformance
 
 
         public static uint fnv32Prime = 16777619;  //139969
-        const uint fnv32Offset = 2147483647;// 2147483647;
+        const uint fnv32Offset = 2166136261;// 2147483647;
 
         // FNV-1a (32-bit) non-cryptographic hash function.    --ariso
         // Adapted from: http://github.com/jakedouglas/fnv-java
